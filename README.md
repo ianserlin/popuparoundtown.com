@@ -1,7 +1,5 @@
 todo
 ----
-* location based search
-* display contact emails
 * verification email
 
 questions
