@@ -1,0 +1,299 @@
+<head>
+  <title>popupcity</title>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMpm22XXc6cONUo5Hff8g4ChVcOs9ndSo&libraries=places&sensor=true"></script>
+</head>
+
+<body>
+  {{> header}}
+  <div class="container">
+    {{> map}}
+    {{> venues}}
+  </div>
+  {{> newVenue}}
+  <div id="editVenueContainer"></div>
+</body>
+
+<template name="map">
+  <div class="row">
+    <div class="span12">
+      <div id="map"></div>
+    </div>
+  </div>
+</template>
+
+<template name="header">
+
+  <div class="container">
+    <header class="jumbotron subhead">
+      <div class="row">
+        <div class="span7">
+          <h1>PopUp Around Town</h1>
+          <p class="lead">Pop-Ups ♥ Venues</p>
+        </div>
+        <div class="pull-right">
+          {{> account}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="span12">
+          <blockquote>
+            Venue owners create an account and add your venue in 2 minutes. Pop-Up owners can then contact you directly.
+          </blockquote>
+        </div>
+      </div>
+      {{> nav}}
+    </header>
+  </div>
+</template>
+
+<template name="nav">
+  <div class="navbar navbar-inverse">
+    <div class="navbar-inner">
+      <form id="zipcodeSearch" class="navbar-search pull-left">
+        <input id="zipcodeSearchInput" type="text" class="search-query" placeholder="Search by Zipcode">
+      </form>
+      <ul class="nav">
+        <li><a class="brand" href="#">&nbsp;&nbsp;&nbsp;{{venueCount}} opportunities nearby</a></li>
+      </ul>
+      {{> myVenues}}
+    </div>
+  </div>
+</template>
+
+<template name="account">
+  {{loginButtons align="right"}}
+</template>
+
+<template name="myVenues">
+  {{#if currentUser}}
+    <ul class="nav pull-right">
+      <li><a class="addVenue" href="#newVenueModal" data-toggle="modal">Add Venue</a></li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          My Venues
+          <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+          {{#each venues}}
+            <li><a class="editVenue" href="#editVenueModal" data-venue="{{_id}}" tabindex="-1">{{name}}</a></li>
+          {{/each}}
+        </ul>
+      </li>
+    </ul>
+  {{/if}}
+</template>
+
+<template name="venues">
+  <div class="row">
+    <div class="span6">
+      <h1>Available Venues</h1>
+    </div>
+    <div class="span3 offset3">
+      <input id="venueFilter" type="text" placeholder="Filter..."/>
+    </div>
+  </div>
+  <div class="row">
+    <table id="venueTable" class="footable span12" data-filter="#venueFilter">
+        <thead>
+          <tr>
+            <th class="span3" data-class="expand" data-sort-initial="true">
+              Venue
+            </th>
+            <th class="span2" data-hide="phone">
+              Availability
+            </th>
+            <th data-hide="phone, tablet">
+              Equipment
+            </th>
+            <th class="span1" data-hide="phone, tablet">
+              Sq Feet
+            </th>
+            <th class="span1" data-hide="phone, tablet">
+              Good For
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each venues}}
+            <tr>
+              <td data-value="{{name}}">
+                <address>
+                  <strong>{{name}}</strong><br/>
+                  <a href="https://maps.google.com/maps?q={{address}}" class="" target="_blank">{{address}}</a><br/>
+                  <a class="contact normal underline" href='{{url}}' target="_blank">Website</a><br/>
+                  <a class="contact normal underline" href='#contact' data-venue="{{_id}}" data-owner="{{owner}}">Contact</a>
+                </address>
+              </td>
+              <td>{{availability}}</td>
+              <td>{{equipment}}</td>
+              <td>
+                {{#if area}}
+                  {{area}} sqft
+                {{/if}}
+              </td>
+              <td>
+                {{#if restaurantsAllowed}}Restaurant{{/if}}
+                {{#if retailAllowed}}Retail{{/if}}
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+    </table>
+  </div>
+</template>
+
+<template name="newVenue">
+  <div id="newVenueModal" tabindex="-1" class="modal hide fade">
+    <form id="newVenueForm" class="form-horizontal">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Add a Pop-Up Venue</h3>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="inputOwner" name="owner" value="{{userId}}">
+        <input type="hidden" id="inputLatitude" name="latitude" value="">
+        <input type="hidden" id="inputLongitude" name="longitude" value="">
+        <div class="control-group">
+          <label class="control-label" for="Name">Name</label>
+          <div class="controls">
+            <input type="text" id="inputName" name="name" placeholder="Venue Name">
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="inputAddress">Address</label>
+          <div class="controls">
+            <input type="text" id="inputAddress" name="address" placeholder="Address" autocomplete="off"></input>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="inputEquipment">Available Equipment</label>
+          <div class="controls">
+            <textarea id="inputEquipment" name="equipment" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="inputAvailablility">Available Hours</label>
+          <div class="controls">
+            <input type="text" id="inputAvailablility" name="availability" placeholder="e.g. M-F 6pm-10pm"></input>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="inputArea">Square Footage</label>
+          <div class="controls">
+            <input type="text" id="inputArea" name="area" placeholder="e.g. 800" autocomplete="off"></input>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="inputUrl">Website Link</label>
+          <div class="controls">
+            <input type="text" id="inputUrl" name="url" placeholder="http://yourwebsite.com" autocomplete="off"></input>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="inputRestaurant">Good for</label>
+          <div class="controls">
+            <label class="checkbox">
+              <input type="checkbox" id="inputRestaurant" name="restaurantsAllowed"> Restaurant Pop-Ups
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" id="inputRetail" name="retailAllowed"> Retail Pop-Ups
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" data-dismiss="modal" class="btn">Close</a>
+        <button type="submit" class="btn btn-primary">List Your Pop-Up Venue</button>
+      </div>
+    </form>
+  </div>
+</template>
+
+<template name="editVenue">
+  <div id="editVenueModal" tabindex="-1" class="modal hide fade">
+    {{#if venue}}
+    <form id="editVenueForm" class="form-horizontal">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Edit {{venue.name}}</h3>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editInputId" name="_id" value="{{venue._id}}">
+        <input type="hidden" id="editInputLatitude" name="latitude" value="{{venue.location.[1]}}">
+        <input type="hidden" id="editInputLongitude" name="longitude" value="{{venue.location.[0]}}">
+        <div class="control-group">
+          <label class="control-label" for="Name">Name</label>
+          <div class="controls">
+            <input type="text" id="editInputName" name="name" placeholder="Venue Name" value="{{venue.name}}" autocomplete="off">
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="editInputAddress">Address</label>
+          <div class="controls">
+            <input type="text" id="editInputAddress" name="address" placeholder="Address" autocomplete="off" value="{{venue.address}}"></input>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="editInputEquipment">Available Equipment</label>
+          <div class="controls">
+            <textarea id="editInputEquipment" name="equipment" rows="3">{{venue.equipment}}</textarea>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="editInputAvailablility">Available Hours</label>
+          <div class="controls">
+            <input type="text" id="editInputAvailablility" name="availability" placeholder="e.g. M-F 6pm-10pm" value="{{venue.availability}}"></input>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="editInputArea">Square Footage</label>
+          <div class="controls">
+            <input type="text" id="editInputArea" name="area" placeholder="e.g. 800" autocomplete="off" value="{{venue.area}}"></input>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="editInputUrl">Website Link</label>
+          <div class="controls">
+            <input type="text" id="editInputUrl" name="url" placeholder="http://yourwebsite.com" autocomplete="off" value="{{venue.url}}"></input>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="editInputRestaurant">Good for</label>
+          <div class="controls">
+            <label class="checkbox">
+              <input type="checkbox" id="editInputRestaurant" name="restaurantsAllowed" checked="{{venue.restaurantsAllowed}}"> Restaurant Pop-Ups
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" id="editInputRetail" name="retailAllowed" checked="{{venue.retailAllowed}}"> Retail Pop-Ups
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" data-dismiss="modal" class="btn btn-danger pull-left" data-venue="{{venue._id}}">Remove Forever</a>
+        <a href="#" data-dismiss="modal" class="btn">Close</a>
+        <button type="submit" class="btn btn-primary">Update {{venue.name}}</button>
+      </div>
+    </form>
+    {{/if}}
+  </div>
+</template>
+
+<template name="infoWindow">
+  <div class="infoWindow">
+    <address>
+      <strong>{{name}}</strong><br/>
+      <a href="https://maps.google.com/maps?q={{address}}" target="_blank">{{address}}</a><br/>
+      {{area}} sqft<br/>
+      {{availability}}<br/>
+      <a href="{{url}}" target="_blank">Website</a><br/>
+      <a class="contact" href='#contact' data-venue="{{_id}}" data-owner="{{owner}}">Contact</a>
+    </address>
+    <dl>
+      <dt>Equipment</dt>
+      <dd>{{equipment}}</dd>
+      <dt>Good For</dt>
+      <dd>{{#if restaurantsAllowed}}Restaurant{{/if}} {{#if retailAllowed}}Retail{{/if}}</dd>
+    </dl>
+  </div>
+</template>
