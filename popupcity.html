@@ -1,5 +1,6 @@
 <head>
-  <title>popupcity</title>
+  <title>PopUp Around Town - Find a Location for your Pop-Up Store or Restaurant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMpm22XXc6cONUo5Hff8g4ChVcOs9ndSo&libraries=places&sensor=true"></script>
 </head>
 
@@ -9,6 +10,7 @@
     {{> map}}
     {{> venues}}
   </div>
+  {{> footer}}
   {{> newVenue}}
   <div id="editVenueContainer"></div>
 </body>
@@ -24,25 +26,36 @@
 <template name="header">
 
   <div class="container">
-    <header class="jumbotron subhead">
-      <div class="row">
-        <div class="span7">
-          <h1>PopUp Around Town</h1>
-          <p class="lead">Pop-Ups ♥ Venues</p>
-        </div>
-        <div class="pull-right">
-          {{> account}}
-        </div>
+    <div class="row">
+      <div class="pull-right account">
+        {{> account}}
       </div>
-      <div class="row">
-        <div class="span12">
-          <blockquote>
-            Venue owners create an account and add your venue in 2 minutes. Pop-Up owners can then contact you directly.
-          </blockquote>
-        </div>
+    </div>
+    <div class="row">
+      <div class="span12 text-center">
+        <h1 class="brand">PopUp Around Town</h1>
       </div>
-      {{> nav}}
-    </header>
+    </div>
+    <hr/>
+    <div class="row hero">
+      <div class="span3 offset1">
+        <h3>Pop-Up Creators</h3>
+        <p>Find unique venues that are as great as your ideas. Contact restaurant and store owners directly.</p>
+      </div>
+      <div class="span3 text-center">
+        <img src="/img/heart.png"/>
+      </div>
+      <div class="span3">
+        <h3>Shop Owners</h3>
+        <p>Host unique experiences for your customers and take advantage of off-hours. List your venue in 30 seconds.</p>
+      </div>
+      <!--
+      <i class="icon-circle bg"></i>
+      <i class="icon-heart mg"></i>
+      <i class="icon-home fg"></i>
+    -->
+    </div>
+    {{> nav}}
   </div>
 </template>
 
@@ -295,5 +308,12 @@
       <dt>Good For</dt>
       <dd>{{#if restaurantsAllowed}}Restaurant{{/if}} {{#if retailAllowed}}Retail{{/if}}</dd>
     </dl>
+  </div>
+</template>
+
+<template name="footer">
+  <div id="footer-unit">
+    <p>Happily designed and created by <a href="http://useful.io" title="Useful IO">Useful IO</a> with inspiration from <a href="http://onigilly.com/" title="Onigilly in San Francisco">real business owners<a/>. Enjoy!</p>
+    <p><a href="https://github.com/ianserlin/popuparoundtown.com" title="PopUp Around Town Code">Code</a> available under the MIT license. Site Content is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0 License">CC BY 3.0</a>.</p>
   </div>
 </template>

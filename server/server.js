@@ -12,7 +12,7 @@ Meteor.publish('nearbyVenues', function(coordinates){
   if(_.isUndefined(coordinates)){
     return Venues.find({});
   }else{
-    return Venues.find({location: { $near: coordinates, $maxDistance: 0.1}})
+    return Venues.find({location: { $near: coordinates, $maxDistance: 1 }});
   }
 });
 
@@ -32,7 +32,6 @@ Venues.allow({
     });
   },
   remove: function (userId, docs) {
-    return true;
     // can only remove your own documents
     return _.all(docs, function(doc) {
       return doc.owner === userId;
