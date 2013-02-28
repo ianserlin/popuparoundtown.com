@@ -103,10 +103,6 @@
     }
   });
 
-  Template.map.rendered = function(){
-    initMap();
-  };
-
   Template.venues.rendered = function(){
     // init datatable
     $('#venueTable').footable();
@@ -159,6 +155,8 @@
     $('body').on('click', '#editVenueForm .btn-danger', function(e){
       Venues.remove($(e.currentTarget).data('venue'));
     });
+
+    initMap();
 	});
 
   function initMap(){
@@ -177,8 +175,7 @@
       }
     });
 
-    var initialLocation;
-    var newyork = new google.maps.LatLng(40.69847032728747, -73.9514422416687);
+    var initialLocation = new google.maps.LatLng(37.800665699999996, -122.412017); // SF
     var browserSupportFlag =  new Boolean();
 
     Map = new google.maps.Map(document.getElementById("map"), {
@@ -187,11 +184,13 @@
     });
 
     Map.addListener('tilesloaded', addMarkersToMap);
+    Map.setCenter(initialLocation);
 
     // Try W3C Geolocation (Preferred)
     if(navigator.geolocation) {
       browserSupportFlag = true;
       navigator.geolocation.getCurrentPosition(function(position) {
+        console.log(position.coords)
         if(NearbyVenuesSubscription){ NearbyVenuesSubscription.stop(); }
         Meteor.subscribe('nearbyVenues', [position.coords.longitude, position.coords.latitude]);
         initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
@@ -209,13 +208,11 @@
     function handleNoGeolocation(errorFlag) {
       if (errorFlag == true) {
         alert("Geolocation service failed.");
-        initialLocation = newyork;
       } else {
         alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
-        initialLocation = newyork;
       }
       if(NearbyVenuesSubscription){ NearbyVenuesSubscription.stop(); }
-      Meteor.subscribe('nearbyVenues', [newyork.lng(), newyork.lat()]);
+      Meteor.subscribe('nearbyVenues', [initialLocation.lng(), initialLocation.lat()]);
       Map.setCenter(initialLocation);
     }
 
