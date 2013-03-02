@@ -1,7 +1,6 @@
 <head>
   <title>PopUp Around Town - Find a Location for your Pop-Up Store or Restaurant</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMpm22XXc6cONUo5Hff8g4ChVcOs9ndSo&libraries=places&sensor=true"></script>
   <style type="text/css" rel="stylesheet">
     @import url('//fonts.googleapis.com/css?family=Oswald|Noticia+Text');
   </style>
@@ -16,8 +15,12 @@
   {{> footer}}
   {{> newVenue}}
   <div id="editVenueContainer"></div>
-  {{> analytics}}
+  {{> scripts}}
 </body>
+
+<template name="scripts">
+  {{> analytics}}
+</template>
 
 <template name="analytics">
   <script type="text/javascript">

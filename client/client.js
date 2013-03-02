@@ -1,4 +1,4 @@
-(function(){
+// (function(global){
 
   // COLLECTIONS
 
@@ -156,8 +156,15 @@
       Venues.remove($(e.currentTarget).data('venue'));
     });
 
-    initMap();
+    loadGoogleScripts();
 	});
+
+  function loadGoogleScripts() {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyAMpm22XXc6cONUo5Hff8g4ChVcOs9ndSo&libraries=places&sensor=true&callback=initMap";
+    document.body.appendChild(script);
+  }
 
   function initMap(){
     Geocoder = new google.maps.Geocoder;
@@ -190,7 +197,7 @@
     if(navigator.geolocation) {
       browserSupportFlag = true;
       navigator.geolocation.getCurrentPosition(function(position) {
-        console.log(position.coords)
+        // console.log(position.coords)
         if(NearbyVenuesSubscription){ NearbyVenuesSubscription.stop(); }
         Meteor.subscribe('nearbyVenues', [position.coords.longitude, position.coords.latitude]);
         initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
@@ -243,4 +250,4 @@
     });
   }
 
-})();
+// })(window);
