@@ -90,7 +90,9 @@
         <input id="zipcodeSearchInput" type="text" class="search-query" placeholder="Search by Zipcode">
       </form>
       <ul class="nav">
-        <li><a class="brand" href="#">&nbsp;&nbsp;&nbsp;{{venueCount}} opportunities nearby</a></li>
+        {{#if venuesLoaded}}
+          <li><a class="brand" href="#">&nbsp;&nbsp;&nbsp;{{venueCount}} opportunities nearby</a></li>
+        {{/if}}
       </ul>
       {{> myVenues}}
     </div>
@@ -98,6 +100,9 @@
 </template>
 
 <template name="account">
+  {{#if notLoggedIn}}
+    To list your venue: 
+  {{/if}}
   {{loginButtons align="right"}}
 </template>
 

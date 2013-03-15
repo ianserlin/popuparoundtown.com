@@ -83,8 +83,16 @@
     }
 	});
 
+  Template.account.notLoggedIn = function(){
+    return Meteor.user() == null;
+  };
+
   Template.nav.venueCount = function(){
     return Venues.find().count();
+  };
+
+  Template.nav.venuesLoaded = function(){
+    return Venues.find().count() > 0;
   };
 
   Template.nav.events({
@@ -216,7 +224,7 @@
       if (errorFlag == true) {
         alert("Geolocation service failed.");
       } else {
-        alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
+        alert("Your browser doesn't support geolocation. We've placed you in San Francisco.");
       }
       if(NearbyVenuesSubscription){ NearbyVenuesSubscription.stop(); }
       Meteor.subscribe('nearbyVenues', [initialLocation.lng(), initialLocation.lat()]);
